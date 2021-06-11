@@ -10,7 +10,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.ezequiel.addresses.helper.AddressTestFixture.newMockedAddress;
+import static com.ezequiel.addresses.domain.AddressRepositoryTestFixture.newMockedAddress;
 
 @DataJpaTest
 @ActiveProfiles("test")

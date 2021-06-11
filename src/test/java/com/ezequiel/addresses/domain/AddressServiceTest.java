@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.ezequiel.addresses.helper.AddressTestFixture.newMockedAddress;
-import static com.ezequiel.addresses.helper.AddressTestFixture.newMockedAddressGeocoding;
+import static com.ezequiel.addresses.domain.AddressServiceTestFixture.newMockedAddress;
+import static com.ezequiel.addresses.domain.AddressServiceTestFixture.newMockedAddressGeocoding;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;

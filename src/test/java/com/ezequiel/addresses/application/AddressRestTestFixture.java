@@ -1,13 +1,11 @@
-package com.ezequiel.addresses.helper;
+package com.ezequiel.addresses.application;
 
-import com.ezequiel.addresses.application.AddressRequest;
 import com.ezequiel.addresses.domain.Address;
-import com.ezequiel.addresses.domain.AddressGeocoding;
 import com.github.javafaker.Faker;
 
 import java.util.Locale;
 
-public class AddressTestFixture {
+public class AddressRestTestFixture {
 
     public static Address newMockedAddress() {
         Faker faker = new Faker(new Locale("pt-BR"));
@@ -39,14 +37,6 @@ public class AddressTestFixture {
         mockedAddressRequest.setLatitude(Double.valueOf(faker.address().latitude().replace(",", ".")));
         mockedAddressRequest.setLongitude(Double.valueOf(faker.address().longitude().replace(",", ".")));
         return mockedAddressRequest;
-    }
-
-    public static AddressGeocoding newMockedAddressGeocoding() {
-        Faker faker = new Faker(new Locale("pt-BR"));
-        AddressGeocoding mockedGeocoding = new AddressGeocoding();
-        mockedGeocoding.setLatitude(Double.valueOf(faker.address().latitude().replace(",", ".")));
-        mockedGeocoding.setLongitude(Double.valueOf(faker.address().longitude().replace(",", ".")));
-        return mockedGeocoding;
     }
 
 }

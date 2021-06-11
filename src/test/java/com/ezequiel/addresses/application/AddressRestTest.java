@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.ezequiel.addresses.helper.AddressTestFixture.newMockedAddress;
-import static com.ezequiel.addresses.helper.AddressTestFixture.newMockedAddressRequest;
+import static com.ezequiel.addresses.application.AddressRestTestFixture.newMockedAddress;
+import static com.ezequiel.addresses.application.AddressRestTestFixture.newMockedAddressRequest;
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.notNullValue;

@@ -17,8 +17,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.ezequiel.addresses.helper.AddressTestFixture.newMockedAddress;
-import static com.ezequiel.addresses.helper.AddressTestFixture.newMockedAddressRequest;
+import static com.ezequiel.addresses.application.AddressControllerTestFixture.newMockedAddress;
+import static com.ezequiel.addresses.application.AddressControllerTestFixture.newMockedAddressRequest;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.doNothing;
