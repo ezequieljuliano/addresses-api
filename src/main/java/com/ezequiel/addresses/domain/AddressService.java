@@ -1,7 +1,6 @@
 package com.ezequiel.addresses.domain;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,7 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@RequiredArgsConstructor
 public class AddressService {
 
     private final AddressRepository addressRepository;
@@ -26,8 +25,8 @@ public class AddressService {
         return addressRepository.save(address);
     }
 
-    public void updateAddress(Address address) {
-        addressRepository.save(address);
+    public Address updateAddress(Address address) {
+        return addressRepository.save(address);
     }
 
     public void deleteAddress(Address address) {
@@ -40,6 +39,10 @@ public class AddressService {
 
     public List<Address> findAllAddresses() {
         return addressRepository.findAll();
+    }
+
+    public List<Address> findAddressesByStreetName(String streetName) {
+        return addressRepository.findByStreetNameIgnoreCase(streetName);
     }
 
     private String getAddressDescription(Address address) {

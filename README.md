@@ -17,13 +17,14 @@ The REST API consists of creating, in the REST standard, a CRUD (Create, Read, U
 
 ## About The Project
 The purpose of this API is to store address data, enable changes and queries and when latitude and longitude is not informed, consult the Google Geocoding API and fill in the data automatically.
+This project also proposes to practice test pyramid concepts and understand how important it is for the life cycle of a software project.
 
 ### Key Features
 * Addresses
 * CRUD
 * Google Geocoding API
-* Tests
-* Container
+* Tests (unit, integration, end-to-end)
+* Containers
 
 ### API Resources
 
@@ -123,17 +124,42 @@ The purpose of this API is to store address data, enable changes and queries and
 
 <span style="color:#cc0000">**DELETE**</span> ```/addresses-api/v1/addresses/{id}``` (delete an address by id)
 
+<br>
+
+<span style="color:#006600">**GET**</span> ```/addresses-api/v1/addresses/search?streetName=``` (find an address by street name)
+<br>
+
+**Content sample:**
+```javascript
+{
+	"id": "62e9f264-f615-43aa-b224-ff16737bee56",
+	"streetName": "Amphitheatre Parkway",
+	"number": "1600",
+	"complement": "Complement",
+	"neighbourhood": "Santa Clara County",
+	"city": "Mountain View,",
+	"state": "California",
+	"country": "US",
+	"zipcode": "94043",
+	"latitude": 37.422416,
+	"longitude": -122.0838694
+}
+```
 
 ### Built With
 * [IntelliJ IDEA](https://www.jetbrains.com/pt-br/idea/) - The IDE used
 * [Java 8](https://www.java.com/pt-BR/) - Execution platform
-* [Spring Boot - 2.4.4](https://spring.io/projects/spring-boot) - Spring Boot makes it easy to create stand-alone, production-grade Spring based Applications that you can "just run"
+* [Spring Boot - 2.5.0](https://spring.io/projects/spring-boot) - Spring Boot makes it easy to create stand-alone, production-grade Spring based Applications that you can "just run"
 * [PostgreSQL](https://www.postgresql.org/) - The database used
 * [Project Lombok](https://projectlombok.org/) - Repetitive code reduction
 * [JUnit](https://junit.org/junit5/) - Unit and integration tests
 * [Flyway](https://flywaydb.org/) - Version control for database
 * [MapStruct](https://mapstruct.org/) - Code generator that greatly simplifies the implementation of mappings between Java bean types based on a convention over configuration approach.
 * [Docker](https://www.docker.com/) - Operating system-level virtualization.
+* [H2 Database](https://www.h2database.com/html/main.html) - In memory database for integration tests
+* [Mockito](https://site.mockito.org/) - Tasty mocking framework for unit tests
+* [REST Assured](https://rest-assured.io/) - Testing and validating REST services
+* [Java Faker](https://github.com/DiUS/java-faker) - Generates fake data for testing
 
 ## Getting Started
 To get a local copy up and running follow these simple steps.
@@ -166,9 +192,9 @@ Now execute:
 docker-compose up
 ```
 
-### Junit Integration Tests
+### Junit Tests
 Run the unit tests and check that everything is fine. 
-Execute the class **AddressControllerTests**.
+Unit tests, integration tests and end-to-end tests were implemented.
 
 ## Contributing
 

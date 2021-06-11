@@ -5,11 +5,11 @@ import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 
 @Mapper
-public interface AddressConverter {
+public interface AddressMapper {
 
-    AddressResponse createAddressResponseFrom(Address address);
+    AddressResponse createAddressResponse(Address address);
 
-    Address createAddressFrom(AddressRequest addressRequest);
+    Address createAddress(AddressRequest addressRequest);
 
     void updateAddress(AddressRequest addressRequest, @MappingTarget Address address);
 

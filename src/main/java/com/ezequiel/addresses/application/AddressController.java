@@ -3,7 +3,6 @@ package com.ezequiel.addresses.application;
 import com.ezequiel.addresses.domain.Address;
 import com.ezequiel.addresses.domain.AddressService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -17,15 +16,15 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/v1/addresses")
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@RequiredArgsConstructor
 public class AddressController {
 
     private final AddressService addressService;
-    private final AddressConverter addressConverter;
+    private final AddressMapper addressMapper;
 
     @PostMapping
     public ResponseEntity<?> createAddress(@Valid @RequestBody AddressRequest content) {
-        Address address = addressConverter.createAddressFrom(content);
+        Address address = addressMapper.createAddress(content);
         address = addressService.createAddress(address);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
@@ -41,7 +40,7 @@ public class AddressController {
         if (!address.isPresent()) {
             return ResponseEntity.notFound().build();
         }
-        addressConverter.updateAddress(content, address.get());
+        addressMapper.updateAddress(content, address.get());
         addressService.updateAddress(address.get());
         return ResponseEntity.ok().build();
     }
@@ -59,7 +58,7 @@ public class AddressController {
     @GetMapping("/{id}")
     public ResponseEntity<AddressResponse> findAddressById(@PathVariable UUID id) {
         return addressService.findAddressById(id)
-                .map(address -> ResponseEntity.ok(addressConverter.createAddressResponseFrom(address)))
+                .map(address -> ResponseEntity.ok(addressMapper.createAddressResponse(address)))
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
@@ -67,7 +66,19 @@ public class AddressController {
     public ResponseEntity<List<AddressResponse>> findAllAddresses() {
         List<AddressResponse> responseList = addressService.findAllAddresses()
                 .stream()
-                .map(addressConverter::createAddressResponseFrom)
+                .map(addressMapper::createAddressResponse)
+                .collect(Collectors.toList());
+        if (responseList.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(responseList);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<AddressResponse>> findAddressesByStreetName(@RequestParam(value = "streetName") String streetName) {
+        List<AddressResponse> responseList = addressService.findAddressesByStreetName(streetName)
+                .stream()
+                .map(addressMapper::createAddressResponse)
                 .collect(Collectors.toList());
         if (responseList.isEmpty()) {
             return ResponseEntity.noContent().build();
