@@ -1,17 +1,15 @@
 package com.ezequiel.addresses.domain;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.ezequiel.addresses.domain.AddressServiceTestFixture.newMockedAddress;
-import static com.ezequiel.addresses.domain.AddressServiceTestFixture.newMockedAddressGeocoding;
+import static com.ezequiel.addresses.domain.AddressServiceTestFixture.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
@@ -31,14 +29,14 @@ public class AddressServiceTest {
 
     @Test
     public void shouldCreateOneAddress() {
-        Address address = newMockedAddress();
+        Address mockedAddress = newMockedAddress();
 
-        given(addressRepository.save(any(Address.class))).willReturn(address);
+        given(addressRepository.save(any(Address.class))).willReturn(mockedAddress);
 
-        Address createdAddress = subject.createAddress(address);
-        Assertions.assertNotNull(createdAddress);
+        Address createdAddress = subject.createAddress(mockedAddress);
+        assertNotNull(createdAddress);
 
-        assertEqualsProperties(address, createdAddress);
+        assertEqualsProperties(mockedAddress, createdAddress);
 
         verify(addressRepository).save(any(Address.class));
         verifyNoMoreInteractions(addressRepository);
@@ -46,19 +44,16 @@ public class AddressServiceTest {
 
     @Test
     public void shouldCreateOneAddressWithoutLatitudeAndLongitude() {
-        AddressGeocoding geocoding = newMockedAddressGeocoding();
+        AddressGeocoding mockedGeocoding = newMockedAddressGeocoding();
+        Address mockedAddressWithoutLatitudeAndLongitude = newMockedAddressWithoutLatitudeAndLongitude();
 
-        Address address = newMockedAddress();
-        address.setLongitude(null);
-        address.setLongitude(null);
+        given(addressFinder.findGeocodingByDescription(anyString())).willReturn(mockedGeocoding);
+        given(addressRepository.save(any(Address.class))).willReturn(mockedAddressWithoutLatitudeAndLongitude);
 
-        given(addressFinder.findGeocodingByDescription(anyString())).willReturn(geocoding);
-        given(addressRepository.save(any(Address.class))).willReturn(address);
+        Address createdAddress = subject.createAddress(mockedAddressWithoutLatitudeAndLongitude);
+        assertNotNull(createdAddress);
 
-        Address createdAddress = subject.createAddress(address);
-        Assertions.assertNotNull(createdAddress);
-
-        assertEqualsProperties(address, createdAddress);
+        assertEqualsProperties(mockedAddressWithoutLatitudeAndLongitude, createdAddress);
 
         verify(addressRepository).save(any(Address.class));
         verify(addressFinder).findGeocodingByDescription(anyString());
@@ -69,14 +64,14 @@ public class AddressServiceTest {
 
     @Test
     public void shouldUpdateOneAddress() {
-        Address address = newMockedAddress();
+        Address mockedAddress = newMockedAddress();
 
-        given(addressRepository.save(any(Address.class))).willReturn(address);
+        given(addressRepository.save(any(Address.class))).willReturn(mockedAddress);
 
-        Address updatedAddress = subject.updateAddress(address);
-        Assertions.assertNotNull(updatedAddress);
+        Address updatedAddress = subject.updateAddress(mockedAddress);
+        assertNotNull(updatedAddress);
 
-        assertEqualsProperties(address, updatedAddress);
+        assertEqualsProperties(mockedAddress, updatedAddress);
 
         verify(addressRepository).save(any(Address.class));
         verifyNoMoreInteractions(addressRepository);
@@ -94,14 +89,14 @@ public class AddressServiceTest {
 
     @Test
     public void shouldReturnOneAddress() {
-        Optional<Address> address = Optional.of(newMockedAddress());
+        Optional<Address> mockedAddress = Optional.of(newMockedAddress());
 
-        given(addressRepository.findById(any(UUID.class))).willReturn(address);
+        given(addressRepository.findById(any(UUID.class))).willReturn(mockedAddress);
 
-        Optional<Address> findAddressById = subject.findAddressById(UUID.randomUUID());
-        Assertions.assertTrue(findAddressById.isPresent());
+        Optional<Address> addressFoundById = subject.findAddressById(UUID.randomUUID());
+        assertTrue(addressFoundById.isPresent());
 
-        assertEqualsProperties(address.get(), findAddressById.get());
+        assertEqualsProperties(mockedAddress.get(), addressFoundById.get());
 
         verify(addressRepository).findById(any(UUID.class));
         verifyNoMoreInteractions(addressRepository);
@@ -109,18 +104,16 @@ public class AddressServiceTest {
 
     @Test
     public void shouldReturnAllAddress() {
-        List<Address> addresses = new ArrayList<>();
-        addresses.add(newMockedAddress());
-        addresses.add(newMockedAddress());
+        List<Address> mockedAddresses = newMockedListWithTwoAddresses();
 
-        given(addressRepository.findAll()).willReturn(addresses);
+        given(addressRepository.findAll()).willReturn(mockedAddresses);
 
         List<Address> findAllAddresses = subject.findAllAddresses();
-        Assertions.assertNotNull(findAllAddresses);
-        Assertions.assertEquals(2, findAllAddresses.size());
+        assertNotNull(findAllAddresses);
+        assertEquals(mockedAddresses.size(), findAllAddresses.size());
 
-        assertEqualsProperties(addresses.get(0), findAllAddresses.get(0));
-        assertEqualsProperties(addresses.get(1), findAllAddresses.get(1));
+        assertEqualsProperties(mockedAddresses.get(0), findAllAddresses.get(0));
+        assertEqualsProperties(mockedAddresses.get(1), findAllAddresses.get(1));
 
         verify(addressRepository).findAll();
         verifyNoMoreInteractions(addressRepository);
@@ -128,34 +121,32 @@ public class AddressServiceTest {
 
     @Test
     public void shouldReturnAddressByStreetName() {
-        List<Address> addresses = new ArrayList<>();
-        addresses.add(newMockedAddress());
-        addresses.add(newMockedAddress());
+        List<Address> mockedAddresses = newMockedListWithTwoAddresses();
 
-        given(addressRepository.findByStreetNameIgnoreCase(anyString())).willReturn(addresses);
+        given(addressRepository.findByStreetNameIgnoreCase(anyString())).willReturn(mockedAddresses);
 
         List<Address> findAddressesByStreetName = subject.findAddressesByStreetName(anyString());
-        Assertions.assertNotNull(findAddressesByStreetName);
-        Assertions.assertEquals(2, findAddressesByStreetName.size());
+        assertNotNull(findAddressesByStreetName);
+        assertEquals(mockedAddresses.size(), findAddressesByStreetName.size());
 
-        assertEqualsProperties(addresses.get(0), findAddressesByStreetName.get(0));
-        assertEqualsProperties(addresses.get(1), findAddressesByStreetName.get(1));
+        assertEqualsProperties(mockedAddresses.get(0), findAddressesByStreetName.get(0));
+        assertEqualsProperties(mockedAddresses.get(1), findAddressesByStreetName.get(1));
 
         verify(addressRepository).findByStreetNameIgnoreCase(anyString());
         verifyNoMoreInteractions(addressRepository);
     }
 
     private void assertEqualsProperties(Address expected, Address actual) {
-        Assertions.assertEquals(expected.getStreetName(), actual.getStreetName());
-        Assertions.assertEquals(expected.getNumber(), actual.getNumber());
-        Assertions.assertEquals(expected.getComplement(), actual.getComplement());
-        Assertions.assertEquals(expected.getNeighbourhood(), actual.getNeighbourhood());
-        Assertions.assertEquals(expected.getCity(), actual.getCity());
-        Assertions.assertEquals(expected.getState(), actual.getState());
-        Assertions.assertEquals(expected.getCountry(), actual.getCountry());
-        Assertions.assertEquals(expected.getZipcode(), actual.getZipcode());
-        Assertions.assertEquals(expected.getLatitude(), actual.getLatitude());
-        Assertions.assertEquals(expected.getLongitude(), actual.getLongitude());
+        assertEquals(expected.getStreetName(), actual.getStreetName());
+        assertEquals(expected.getNumber(), actual.getNumber());
+        assertEquals(expected.getComplement(), actual.getComplement());
+        assertEquals(expected.getNeighbourhood(), actual.getNeighbourhood());
+        assertEquals(expected.getCity(), actual.getCity());
+        assertEquals(expected.getState(), actual.getState());
+        assertEquals(expected.getCountry(), actual.getCountry());
+        assertEquals(expected.getZipcode(), actual.getZipcode());
+        assertEquals(expected.getLatitude(), actual.getLatitude());
+        assertEquals(expected.getLongitude(), actual.getLongitude());
     }
 
 }

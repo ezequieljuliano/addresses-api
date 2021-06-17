@@ -2,12 +2,15 @@ package com.ezequiel.addresses.domain;
 
 import com.github.javafaker.Faker;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class AddressServiceTestFixture {
 
+    private static final Faker faker = new Faker(new Locale("pt-BR"));
+
     public static Address newMockedAddress() {
-        Faker faker = new Faker(new Locale("pt-BR"));
         Address mockedAddress = new Address();
         mockedAddress.setStreetName(faker.address().streetName());
         mockedAddress.setNumber(faker.address().streetAddressNumber());
@@ -22,8 +25,21 @@ public class AddressServiceTestFixture {
         return mockedAddress;
     }
 
+    public static Address newMockedAddressWithoutLatitudeAndLongitude() {
+        Address mockedAddress = newMockedAddress();
+        mockedAddress.setLatitude(null);
+        mockedAddress.setLongitude(null);
+        return mockedAddress;
+    }
+
+    public static List<Address> newMockedListWithTwoAddresses() {
+        List<Address> mockedListAddresses = new ArrayList<>();
+        mockedListAddresses.add(newMockedAddress());
+        mockedListAddresses.add(newMockedAddress());
+        return mockedListAddresses;
+    }
+
     public static AddressGeocoding newMockedAddressGeocoding() {
-        Faker faker = new Faker(new Locale("pt-BR"));
         AddressGeocoding mockedGeocoding = new AddressGeocoding();
         mockedGeocoding.setLatitude(Double.valueOf(faker.address().latitude().replace(",", ".")));
         mockedGeocoding.setLongitude(Double.valueOf(faker.address().longitude().replace(",", ".")));

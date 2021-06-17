@@ -11,12 +11,10 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.ezequiel.addresses.application.AddressRestTestFixture.newMockedAddress;
-import static com.ezequiel.addresses.application.AddressRestTestFixture.newMockedAddressRequest;
+import static com.ezequiel.addresses.application.AddressRestTestFixture.*;
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 import static org.hamcrest.Matchers.notNullValue;
@@ -52,13 +50,10 @@ public class AddressRestTest {
 
     @Test
     public void shouldCreateOneAddressWithoutLatitudeAndLongitude() {
-        AddressRequest addressRequest = newMockedAddressRequest();
-        addressRequest.setLongitude(null);
-        addressRequest.setLatitude(null);
         given()
                 .header("Content-type", "application/json")
                 .and()
-                .body(addressRequest)
+                .body(newMockedAddressRequestWithoutLatitudeAndLongitude())
                 .when()
                 .post(String.format("http://localhost:%s/addresses-api/v1/addresses", port))
                 .then()
@@ -99,10 +94,7 @@ public class AddressRestTest {
 
     @Test
     public void shouldReturnAllAddress() {
-        List<Address> addresses = new ArrayList<>();
-        addresses.add(newMockedAddress());
-        addresses.add(newMockedAddress());
-        addressRepository.saveAll(addresses);
+        addressRepository.saveAll(newMockedListWithTwoAddresses());
         when()
                 .get(String.format("http://localhost:%s/addresses-api/v1/addresses", port))
                 .then()
@@ -112,12 +104,11 @@ public class AddressRestTest {
 
     @Test
     public void shouldReturnAddressesByStreetName() {
-        List<Address> addresses = new ArrayList<>();
-        addresses.add(newMockedAddress());
-        addresses.add(newMockedAddress());
-        addressRepository.saveAll(addresses);
+        List<Address> mockedAddresses = newMockedListWithTwoAddresses();
+        addressRepository.saveAll(mockedAddresses);
+        String streetNameSavedFromFirstAddress = mockedAddresses.get(0).getStreetName();
         when()
-                .get(String.format("http://localhost:%s/addresses-api/v1/addresses/search?streetName=%s", port, addresses.get(0).getStreetName()))
+                .get(String.format("http://localhost:%s/addresses-api/v1/addresses/search?streetName=%s", port, streetNameSavedFromFirstAddress))
                 .then()
                 .statusCode(is(HttpStatus.OK.value()))
                 .body(notNullValue());

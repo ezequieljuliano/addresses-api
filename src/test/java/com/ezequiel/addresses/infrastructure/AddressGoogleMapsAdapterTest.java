@@ -5,16 +5,17 @@ import com.google.maps.GeoApiContext;
 import com.google.maps.GeocodingApi;
 import com.google.maps.GeocodingApiRequest;
 import com.google.maps.model.GeocodingResult;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 import static com.ezequiel.addresses.infrastructure.AddressGoogleMapsAdapterTestFixture.newMockedGeocodingResults;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.eq;
-import static org.mockito.BDDMockito.when;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
@@ -33,17 +34,17 @@ public class AddressGoogleMapsAdapterTest {
 
     @Test
     public void shouldReturnGeocodingByDescription() throws Exception {
-        GeocodingResult[] geocodingResults = newMockedGeocodingResults();
+        GeocodingResult[] mockedGeocodingResults = newMockedGeocodingResults();
 
-        when(geocodingApiRequest.address(anyString())).thenReturn(geocodingApiRequest);
-        when(geocodingApiRequest.await()).thenReturn(geocodingResults);
+        given(geocodingApiRequest.address(anyString())).willReturn(geocodingApiRequest);
+        given(geocodingApiRequest.await()).willReturn(mockedGeocodingResults);
 
         try (MockedStatic<GeocodingApi> mockedGeocodingApi = Mockito.mockStatic(GeocodingApi.class)) {
             mockedGeocodingApi.when(() -> GeocodingApi.newRequest(eq(geoApiContext))).thenReturn(geocodingApiRequest);
-            AddressGeocoding geocoding = subject.findGeocodingByDescription(anyString());
-            Assertions.assertNotNull(geocoding);
-            Assertions.assertEquals(geocodingResults[0].geometry.location.lat, geocoding.getLatitude());
-            Assertions.assertEquals(geocodingResults[0].geometry.location.lng, geocoding.getLongitude());
+            AddressGeocoding geocodingFoundByDescription = subject.findGeocodingByDescription(anyString());
+            assertNotNull(geocodingFoundByDescription);
+            assertEquals(mockedGeocodingResults[0].geometry.location.lat, geocodingFoundByDescription.getLatitude());
+            assertEquals(mockedGeocodingResults[0].geometry.location.lng, geocodingFoundByDescription.getLongitude());
         }
 
         verify(geocodingApiRequest).address(anyString());

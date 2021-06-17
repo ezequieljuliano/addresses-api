@@ -9,8 +9,9 @@ import java.util.Locale;
 
 public class AddressGoogleMapsAdapterTestFixture {
 
+    private static final Faker faker = new Faker(new Locale("pt-BR"));
+
     public static GeocodingResult[] newMockedGeocodingResults() {
-        Faker faker = new Faker(new Locale("pt-BR"));
         double latitude = Double.parseDouble(faker.address().latitude().replace(",", "."));
         double longitude = Double.parseDouble(faker.address().latitude().replace(",", "."));
         LatLng latLng = new LatLng(latitude, longitude);

@@ -6,8 +6,9 @@ import java.util.Locale;
 
 public class AddressFinderTestFixture {
 
+    private static final Faker faker = new Faker(new Locale("pt-BR"));
+
     public static AddressGeocoding newMockedAddressGeocoding() {
-        Faker faker = new Faker(new Locale("pt-BR"));
         AddressGeocoding mockedAddressGeocoding = new AddressGeocoding();
         mockedAddressGeocoding.setLatitude(Double.valueOf(faker.address().latitude().replace(",", ".")));
         mockedAddressGeocoding.setLongitude(Double.valueOf(faker.address().longitude().replace(",", ".")));

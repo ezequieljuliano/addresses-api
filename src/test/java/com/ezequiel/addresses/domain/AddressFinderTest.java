@@ -1,13 +1,16 @@
 package com.ezequiel.addresses.domain;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import static com.ezequiel.addresses.domain.AddressFinderTestFixture.newMockedAddressGeocoding;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 public class AddressFinderTest {
 
@@ -20,15 +23,15 @@ public class AddressFinderTest {
 
     @Test
     public void shouldReturnGeocodingByDescription() {
-        AddressGeocoding geocoding = newMockedAddressGeocoding();
+        AddressGeocoding mockedAddressGeocoding = newMockedAddressGeocoding();
 
-        when(subject.findGeocodingByDescription(anyString())).thenReturn(geocoding);
+        given(subject.findGeocodingByDescription(anyString())).willReturn(mockedAddressGeocoding);
 
-        AddressGeocoding geocodingByDescription = subject.findGeocodingByDescription(anyString());
+        AddressGeocoding addressGeocodingFoundByDescription = subject.findGeocodingByDescription(anyString());
 
-        Assertions.assertNotNull(geocodingByDescription);
-        Assertions.assertEquals(geocoding.getLatitude(), geocodingByDescription.getLatitude());
-        Assertions.assertEquals(geocoding.getLongitude(), geocodingByDescription.getLongitude());
+        assertNotNull(addressGeocodingFoundByDescription);
+        assertEquals(mockedAddressGeocoding.getLatitude(), addressGeocodingFoundByDescription.getLatitude());
+        assertEquals(mockedAddressGeocoding.getLongitude(), addressGeocodingFoundByDescription.getLongitude());
 
         verify(subject).findGeocodingByDescription(anyString());
         verifyNoMoreInteractions(subject);
